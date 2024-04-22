@@ -6,7 +6,7 @@ export default function CrChip() {
   return (
     <Stack spacing={1}>
       <Stack direction="row" spacing={1}>
-        <Chip label="100% off" color="success" />
+        <Chip label="10% off" color="success" />
       </Stack>
     </Stack>
   );
