@@ -2,13 +2,13 @@ import { Box, Grid } from "@mui/material"
 import CrCard from "../components/CrCard"
 import CrNavBar from "../components/CrNavBar"
 import { useEffect, useState } from "react"
-import { Product } from '../types/Product'
+import { ProductType } from '../types/Product'
 import { getProducts } from '../services/ProductService'
 
 
 const HomePage = () => {
 
-  const [products, setProducts]  = useState<Product[]>([]);
+  const [products, setProducts]  = useState<ProductType[]>([]);
 
   const queryProducts = async () => {
     try {
@@ -33,7 +33,7 @@ const HomePage = () => {
         }}>
         <Grid container spacing={2}>
           {[1, 2, 3, 4, 5, 6].map((item) => (      
-            products.map((product : Product) => {
+            products.map((product : ProductType) => {
               return(
                 <Grid item xs={12} sm={6} md={4} lg={3} key={item}>
                   <CrCard

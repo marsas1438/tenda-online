@@ -2,9 +2,14 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
+import { RatingType } from '../types/Rating';
 
-export default function CrRating() {
-  const [value, setValue] = React.useState<number | null>(2);
+interface Props {
+  rating: RatingType
+}
+
+const CrRating = ({rating}:Props)=>  {
+  const [value, setValue] = React.useState<number | null>(rating.rate);
 
   return (
     <Box
@@ -23,3 +28,5 @@ export default function CrRating() {
     </Box>
   );
 }
+
+export default CrRating
