@@ -15,6 +15,7 @@ import { getProductById } from '../services/ProductService'
 import CardActionArea from '@mui/material/CardActionArea';
 import Container from '@mui/material/Container';
 import { Box, Grid } from '@mui/material';
+import dataCart from '../data/CommonData';
 
 const ProductDetail = ()=>  {
 
@@ -26,7 +27,12 @@ const ProductDetail = ()=>  {
   const handleClick = () => {
     navigate('/');
   };
-
+  const handleAddCartItem = (quantity: number) => {
+    if (product != undefined) {
+      dataCart.push({...product, quantity:quantity})
+    }
+  }
+  
   const queryProduct = async () => {
     try {
       const dataProducts = await getProductById(idProduct!==undefined?parseInt(idProduct):0);
@@ -56,12 +62,12 @@ const ProductDetail = ()=>  {
             <Typography variant="h6" gutterBottom>Categoría: {product.category}</Typography>
             <Typography variant="h6" gutterBottom>Precio: ${product.price}</Typography>
             <Typography variant="body1" gutterBottom>{product.description}</Typography>
-            <Button sx={{ alignSelf: 'center' }}
+            <Button 
                     size="small"
-                    variant='contained' onClick={handleClick}>Volver</Button>
-            <Button sx={{ alignSelf: 'center' }}
+                    variant='contained' onClick={handleClick}>Volver al inicio</Button>
+            <Button 
                     size="small"
-                    variant='contained' onClick={handleClick}>Agregar al carrito</Button>
+                    variant='contained' onClick={() => handleAddCartItem(1)}>Agregar al carrito</Button>
           </Grid>
         </Grid>
       </Container>:<></>}

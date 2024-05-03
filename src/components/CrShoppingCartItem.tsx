@@ -4,7 +4,6 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import CrChip from './CrChip';
 import { CardActionArea, Grid } from '@mui/material';
 import { CartItem } from '../types/CartItem';
 
@@ -14,7 +13,7 @@ interface Props {
 
 const CrShoppingCartItem = ({cartItem}:Props)=>  {
   return (
-    <Card className="card" sx={{ height: '100%' }}>
+    <Card className="card" sx={{ width: '100%', height: '100%' }}>
       <CardActionArea>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -29,6 +28,9 @@ const CrShoppingCartItem = ({cartItem}:Props)=>  {
             <CardContent>
               <Typography gutterBottom variant="h6" component="div">
                 {cartItem.title.length > 20 ? `${cartItem.title.substring(0, 10)}...` : cartItem.title}
+              </Typography>
+              <Typography gutterBottom component="div">
+                ${cartItem.price}
               </Typography>
             </CardContent>
           </Grid>

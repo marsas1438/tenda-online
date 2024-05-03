@@ -30,7 +30,20 @@ const HomePage = () => {
             display: 'flex',
             gap: 2,
         }}>
-        {loading?<LinearProgress />:
+        {loading?
+        <Grid container spacing={2}>
+          {[1, 2, 3, 4, 5, 6].map((item) => (      
+            [1, 2, 3, 4, 5, 6,7,7].map((newItem) => {
+              return(
+                <Grid item xs={2} sm={6} md={6} lg={3} key={item}>
+                  <CrCard
+                    product={undefined}
+                  />
+                </Grid>
+              )
+            })
+          ))}
+        </Grid>:
         <Grid container spacing={2}>
           {[1, 2, 3, 4, 5, 6].map((item) => (      
             products.map((product : ProductType) => {

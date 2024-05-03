@@ -10,14 +10,22 @@ import CrRating from './CrRating';
 import { ProductType } from '../types/Product';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
-import { Box, CardActionArea } from '@mui/material';
+import { Box, CardActionArea, Skeleton } from '@mui/material';
 import { useState } from 'react';
 import CrModal from './CrModal';
 import dataCart from '../data/CommonData';
 
 interface Props {
-  product: ProductType
+  product?: ProductType
 }
+
+const styles = {
+  cardActions: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%'
+  }
+};
 
 const CrCard = ({product}:Props)=>  {
   
@@ -25,7 +33,7 @@ const CrCard = ({product}:Props)=>  {
   const [open, setOpen] = useState(false);
 
   const handleClickDetail = () => {
-    navigate(`/detalle/${product.id}`);
+    navigate(`/detalle/${product!==undefined?product.id:'0'}`);
   };
 
   const handleClickOpen = () => {
@@ -37,8 +45,11 @@ const CrCard = ({product}:Props)=>  {
   };
 
   const handleAddCartItem = (quantity: number) => {
-    dataCart.push({...product, quantity:quantity})
-    setOpen(false);
+    if (product != undefined) {
+      dataCart.push({...product, quantity:quantity})
+      setOpen(false);
+    }
+    navigate('/');
   }
 
   return (
@@ -46,14 +57,26 @@ const CrCard = ({product}:Props)=>  {
           <Card className="card" sx={{ height: '100%' }}>
             <CardActionArea onClick={handleClickDetail}>
               <Box position="relative">
+        {product == null ? (
+				  <></>
+			  ) : (
               <CrChip/>
+        )}
+			  {product == null ? (
+				  <Skeleton sx={{ height: 200 }} animation="wave" variant="rectangular" />
+			  ) : (
               <CardMedia component="img"
                 style={{ height: 200 }}
                 image={product.image}
                 title={product.title}
               />
+			 )}
               </Box>
               <CardContent>
+			  {product == null ? (
+            <Skeleton animation="wave" height={150} style={{ marginBottom: 1 }} />
+				) : (
+          <>
                 <Typography gutterBottom variant="h6" component="div">
                 {product.title.length > 20 ? `${product.title.substring(0, 20)}...` : product.title}
                 </Typography>
@@ -61,21 +84,32 @@ const CrCard = ({product}:Props)=>  {
                 <Typography variant="body2" color="text.secondary">
                   {product.description.length > 100 ? `${product.description.substring(0, 100)}...` : product.description}
                 </Typography>
+                </>
+				)}
+        {product == null ? (
+            <Skeleton animation="wave" height={50} style={{ marginBottom: 1 }} />
+				) : (
                 <CrRating
                   rating={product.rating}
                 />
+              )}
               </CardContent>
             </CardActionArea>
-            <CardActions sx={{
-              display: "flex",
-              justifyContent: "space-between",
-            }}>
+            <CardActions style={styles.cardActions}>
+              {product == null ? (
+				  <></>
+			  ) : (
               <Button 
                       size="small"
-                      variant='contained' onClick={handleClickOpen}><VisibilityIcon></VisibilityIcon> Vista previa</Button>
+                      variant='contained' onClick={handleClickOpen}><VisibilityIcon></VisibilityIcon> Agregar al carrito</Button>
+            )}
             </CardActions>
           </Card>
+          {product == null ? (
+				  <></>
+			  ) : (
           <CrModal open={open} handleClose={handleClose} handleDetail={handleClickDetail} handleAdd={handleAddCartItem} product={product}/>
+        )}
         </>
   );
 }
