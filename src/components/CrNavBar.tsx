@@ -9,13 +9,16 @@ import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CrShoppingCartItem from './CrShoppingCartItem';
+import { Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { CartItem } from '../types/CartItem';
+import dataCart from '../data/CommonData';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -56,11 +59,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+type Anchor = 'top' | 'left' | 'bottom' | 'right';
+
 export default function CrNavBar() {
+
+  const [showCart, setShowCart] = React.useState<null | HTMLElement>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
+  const isCartOpen = Boolean(showCart);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -79,6 +87,10 @@ export default function CrNavBar() {
 
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const toggleCart = (event: React.MouseEvent<HTMLElement>) => {
+    setShowCart(event.currentTarget);
   };
 
   const menuId = 'primary-search-account-menu';
@@ -101,6 +113,63 @@ export default function CrNavBar() {
       <MenuItem onClick={handleMenuClose}>Perfil</MenuItem>
       <MenuItem onClick={handleMenuClose}>Cuenta</MenuItem>
     </Menu>
+  );
+
+  const toggleDrawer =
+    (_anchor: Anchor, _open: boolean) =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+
+      setShowCart(null);
+    };
+
+  const list = (anchor: Anchor) => (
+    <Box
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <AppBar position="static">
+    <Toolbar>
+      <Typography
+       variant="h6"
+       component="div"
+       sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+      >
+      CARRO DE COMPRAS
+      </Typography>
+      </Toolbar>
+      </AppBar>
+      <List>
+            {dataCart.map((cartItem : CartItem) => {
+              return(
+                <>
+                <Divider />
+                  <ListItem key={1} disablePadding>
+                    <CrShoppingCartItem
+                      cartItem={cartItem}
+                    />  
+                  </ListItem>
+                </>
+              )
+            })}
+      </List>
+    </Box>
+  );
+
+  const renderCart = (
+    <Drawer
+            anchor={'right'}
+            open={isCartOpen}
+            onClose={toggleDrawer('right', false)}
+          >
+            {list('right')}
+    </Drawer>
   );
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -128,18 +197,6 @@ export default function CrNavBar() {
         </IconButton>
         <p>Messages</p>
       </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="Nueva notificación"
-          color="inherit"
-        >
-          <Badge badgeContent={1} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
@@ -159,22 +216,22 @@ export default function CrNavBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
+        <LaptopMacIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+        <Typography
             variant="h6"
             noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+            component="a"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
           >
-            Tienda Online - Indra
+            TIENDA INDRA
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -192,8 +249,9 @@ export default function CrNavBar() {
               size="large"
               aria-label="Mostrar notificación"
               color="inherit"
+              onClick={toggleCart}
             >
-              <Badge badgeContent={1} color="error">
+              <Badge badgeContent={dataCart.length} color="error">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
@@ -223,6 +281,7 @@ export default function CrNavBar() {
           </Box>
         </Toolbar>
       </AppBar>
+      {renderCart}
       {renderMobileMenu}
       {renderMenu}
     </Box>

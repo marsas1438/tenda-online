@@ -1,13 +1,12 @@
-import { Box, Grid } from "@mui/material"
+import { Box, Grid, LinearProgress, makeStyles } from "@mui/material"
 import CrCard from "../components/CrCard"
-import CrNavBar from "../components/CrNavBar"
 import { useEffect, useState } from "react"
 import { ProductType } from '../types/Product'
 import { getProducts } from '../services/ProductService'
 
-
 const HomePage = () => {
 
+  const [loading, setLoading]  = useState<boolean>(true);
   const [products, setProducts]  = useState<ProductType[]>([]);
 
   const queryProducts = async () => {
@@ -16,6 +15,8 @@ const HomePage = () => {
       setProducts(dataProducts);
     } catch (error) {
       console.error('Error al cargar productos:', error);
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -24,18 +25,17 @@ const HomePage = () => {
   }, []);
     
   return (
-    <>
-        <CrNavBar/>
         <Box sx={{
             marginTop: 5,
             display: 'flex',
             gap: 2,
         }}>
+        {loading?<LinearProgress />:
         <Grid container spacing={2}>
           {[1, 2, 3, 4, 5, 6].map((item) => (      
             products.map((product : ProductType) => {
               return(
-                <Grid item xs={12} sm={6} md={4} lg={3} key={item}>
+                <Grid item xs={2} sm={6} md={6} lg={3} key={item}>
                   <CrCard
                     product={product}
                   />
@@ -44,11 +44,10 @@ const HomePage = () => {
             })
           ))}
         </Grid>
+        }
 
         </Box>
-        
-    </>
-    
+            
   )
 }
 
